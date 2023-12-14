@@ -49,14 +49,125 @@ export async function mealsRoutes(app: FastifyInstance) {
       })
 
       const { mealId } = getMealByIdSchema.parse(req.params)
-      const meal = await knex("meals")
-        .where("user_id", req.user?.id)
-        .where("id", mealId)
-        .first()
+      const meal = await knex("meals").where("id", mealId).first()
 
       if (!meal) return reply.status(404).send({ error: "Meal not found" })
 
       return reply.status(200).send({ meal })
+    }
+  )
+
+  // Update
+  app.put(
+    "/:mealId",
+    { preHandler: [checkSessionIdExists] },
+    async (req, reply) => {
+      const paramsSchema = z.object({
+        mealId: z.string().uuid(),
+      })
+
+      const { mealId } = paramsSchema.parse(req.params)
+
+      const updateMealSchema = z.object({
+        name: z.string(),
+        description: z.string(),
+        isOnDiet: z.boolean(),
+        date: z.coerce.date(),
+      })
+
+      const { name, description, isOnDiet, date } = updateMealSchema.parse(
+        req.body
+      )
+
+      const meal = await knex("meals").where("id", mealId).first()
+
+      if (!meal) return reply.status(404).send({ error: "Meal not found" })
+
+      await knex("meals")
+        .where({
+          user_id: req.user?.id,
+          id: mealId,
+        })
+        .update({
+          name,
+          description,
+          is_on_diet: isOnDiet,
+          date: date.getTime(),
+          updated_at: knex.fn.now(),
+        })
+
+      return reply.status(204).send()
+    }
+  )
+
+  // Delete
+  app.delete(
+    "/:mealId",
+    { preHandler: [checkSessionIdExists] },
+    async (req, reply) => {
+      const paramsSchema = z.object({
+        mealId: z.string().uuid(),
+      })
+
+      const { mealId } = paramsSchema.parse(req.params)
+
+      const meal = await knex("meals").where("id", mealId).first()
+
+      if (!meal) return reply.status(404).send({ error: "Meal not found" })
+
+      await knex("meals").where("id", mealId).del()
+    }
+  )
+
+  // Metrics
+  app.get(
+    "/metrics",
+    { preHandler: [checkSessionIdExists] },
+    async (req, reply) => {
+      const totalMeals = await knex("meals").where("user_id", req.user?.id)
+
+      const totalMealsOnDiet = await knex("meals")
+        .where({
+          user_id: req.user?.id,
+          is_on_diet: true,
+        })
+        .count("id", { as: "total" })
+        .first()
+
+      const totalMealsOffDiet = await knex("meals")
+        .where({
+          user_id: req.user?.id,
+          is_on_diet: false,
+        })
+        .count("id", { as: "total" })
+        .first()
+
+      const { bestOnDietSequence } = totalMeals.reduce(
+        (acc, meal) => {
+          if (meal.is_on_diet) {
+            acc.currentOnDietSequence++
+
+            if (acc.currentOnDietSequence > acc.bestOnDietSequence) {
+              acc.bestOnDietSequence = acc.currentOnDietSequence
+            }
+          } else {
+            acc.currentOnDietSequence = 0
+          }
+
+          return acc
+        },
+        {
+          bestOnDietSequence: 0,
+          currentOnDietSequence: 0,
+        }
+      )
+
+      return reply.status(200).send({
+        totalMeals: totalMeals.length,
+        totalMealsOnDiet: totalMealsOnDiet?.total,
+        totalMealsOffDiet: totalMealsOffDiet?.total,
+        bestOnDietSequence,
+      })
     }
   )
 }
