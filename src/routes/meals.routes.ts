@@ -92,7 +92,7 @@ export async function mealsRoutes(app: FastifyInstance) {
           name,
           description,
           is_on_diet: isOnDiet,
-          date: date.getTime(),
+          date: new Date(date).toISOString(),
           updated_at: knex.fn.now(),
         })
 
