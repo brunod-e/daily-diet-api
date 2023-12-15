@@ -116,6 +116,8 @@ export async function mealsRoutes(app: FastifyInstance) {
       if (!meal) return reply.status(404).send({ error: "Meal not found" })
 
       await knex("meals").where("id", mealId).del()
+
+      return reply.status(204).send()
     }
   )
 
