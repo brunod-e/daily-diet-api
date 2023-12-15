@@ -13,8 +13,8 @@ describe("Users routes", () => {
   })
 
   beforeEach(async () => {
-    execSync("npm run knex migrate:rollback --all")
-    execSync("npm run knex migrate:latest")
+    execSync("npm run dev-knex migrate:rollback --all")
+    execSync("npm run dev-knex migrate:latest")
   })
 
   it("should be able to create a new user", async () => {

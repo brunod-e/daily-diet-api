@@ -13,8 +13,8 @@ describe("Meals routes", () => {
   })
 
   beforeEach(async () => {
-    execSync("npm run knex migrate:rollback --all")
-    execSync("npm run knex migrate:latest")
+    execSync("npm run dev-knex migrate:rollback --all")
+    execSync("npm run dev-knex migrate:latest")
   })
 
   it("should be able to create a new meal", async () => {
@@ -54,7 +54,7 @@ describe("Meals routes", () => {
         name: "Test meal A",
         description: "Test meal description 1",
         isOnDiet: true,
-        date: "Thu Dec 14 2023 22:57:59 GMT-0300",
+        date: new Date(Date.now()),
       })
       .expect(201)
 
@@ -65,9 +65,10 @@ describe("Meals routes", () => {
         name: "Test meal B",
         description: "Test meal description 2",
         isOnDiet: true,
-        date: "Thu Dec 14 2023 22:57:59 GMT-0300",
+        date: new Date(Date.now() + 24 * 60 * 60 * 1000), // 1 day after
       })
       .expect(201)
+
     await request(app.server)
       .post("/meals")
       .set("Cookie", userResponse.get("Set-Cookie"))
@@ -85,6 +86,7 @@ describe("Meals routes", () => {
       .expect(200)
 
     expect(listMealsResponse.body.meals).toHaveLength(3)
+    console.log(listMealsResponse.body.meals)
     expect(listMealsResponse.body.meals[0].name).toEqual("Test meal C")
     expect(listMealsResponse.body.meals[1].name).toEqual("Test meal B")
     expect(listMealsResponse.body.meals[2].name).toEqual("Test meal A")
@@ -127,7 +129,7 @@ describe("Meals routes", () => {
         name: "Test meal A",
         description: "Test meal description 1",
         is_on_diet: 1,
-        date: expect.any(Number),
+        date: expect.any(String),
       }),
     })
   })
@@ -180,7 +182,7 @@ describe("Meals routes", () => {
         name: "Test meal B",
         description: "Test meal description 2",
         is_on_diet: 1,
-        date: expect.any(Number),
+        date: expect.any(String),
       }),
     })
   })
