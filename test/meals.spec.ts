@@ -33,7 +33,7 @@ describe("Meals routes", () => {
         name: "Test meal name",
         description: "Test meal description",
         isOnDiet: true,
-        date: new Date(),
+        date: "Thu Dec 14 2023 22:57:59 GMT-0300",
       })
       .expect(201)
   })
@@ -54,7 +54,7 @@ describe("Meals routes", () => {
         name: "Test meal A",
         description: "Test meal description 1",
         isOnDiet: true,
-        date: new Date(),
+        date: "Thu Dec 14 2023 22:57:59 GMT-0300",
       })
       .expect(201)
 
@@ -65,7 +65,7 @@ describe("Meals routes", () => {
         name: "Test meal B",
         description: "Test meal description 2",
         isOnDiet: true,
-        date: new Date(),
+        date: "Thu Dec 14 2023 22:57:59 GMT-0300",
       })
       .expect(201)
     await request(app.server)
@@ -106,7 +106,7 @@ describe("Meals routes", () => {
         name: "Test meal A",
         description: "Test meal description 1",
         isOnDiet: true,
-        date: new Date(),
+        date: "Thu Dec 14 2023 22:57:59 GMT-0300",
       })
       .expect(201)
 
@@ -148,7 +148,7 @@ describe("Meals routes", () => {
         name: "Test meal A",
         description: "Test meal description 1",
         isOnDiet: true,
-        date: new Date(),
+        date: "Thu Dec 14 2023 22:57:59 GMT-0300",
       })
       .expect(201)
 
@@ -166,7 +166,7 @@ describe("Meals routes", () => {
         name: "Test meal B",
         description: "Test meal description 2",
         isOnDiet: true,
-        date: new Date(),
+        date: "Thu Dec 14 2023 22:57:59 GMT-0300",
       })
       .expect(204)
 
@@ -201,7 +201,7 @@ describe("Meals routes", () => {
         name: "Test meal A",
         description: "Test meal description 1",
         isOnDiet: true,
-        date: new Date(),
+        date: "Thu Dec 14 2023 22:57:59 GMT-0300",
       })
       .expect(201)
 
@@ -239,7 +239,7 @@ describe("Meals routes", () => {
         name: "Test meal A",
         description: "Test meal description 1",
         isOnDiet: true,
-        date: new Date(),
+        date: "Thu Dec 14 2023 22:57:59 GMT-0300",
       })
       .expect(201)
 
@@ -250,7 +250,7 @@ describe("Meals routes", () => {
         name: "Test meal B",
         description: "Test meal description 2",
         isOnDiet: true,
-        date: new Date(),
+        date: "Thu Dec 14 2023 22:57:59 GMT-0300",
       })
       .expect(201)
     await request(app.server)
